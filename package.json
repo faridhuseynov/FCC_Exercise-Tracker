@@ -1,0 +1,26 @@
+{
+  "name": "fcc_exercise-tracker",
+  "version": "1.0.0",
+  "description": "FreeCodeCamp API & Microservice Certification Project - Exercise Tracker",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faridhuseynov/FCC_Exercise-Tracker.git"
+  },
+  "author": "Farid Huseynov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/faridhuseynov/FCC_Exercise-Tracker/issues"
+  },
+  "homepage": "https://github.com/faridhuseynov/FCC_Exercise-Tracker#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.11.19"
+  }
+}
