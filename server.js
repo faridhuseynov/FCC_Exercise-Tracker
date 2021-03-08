@@ -8,7 +8,7 @@ const port = process.env.PORT||3000;
 
 app.use(cors({optionsSuccessStatus:200}));
 app.use(bodyParser.urlencoded({extended:true}));
-app.use("public",express.static(__dirname+"/public"));
+app.use("/public",express.static(__dirname + "/public"));
 
 app.get("/",(req,res)=>{
     res.sendFile(__dirname+"/views/index.html");

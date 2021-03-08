@@ -4,9 +4,36 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreeCodeCamp Exercise Tracker</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../public/style.css">    
+<title>FreeCodeCamp Exercise Tracker</title>
 </head>
 <body>
-    
+    <div class="container">
+        <h1>Exercise tracker</h1>
+        <div class="request-block">
+            <div class="request-box new-user-box">
+                <h2>Create a New User</h2>
+                <label class="form-label">POST /api/exercise/new-user</label>
+                <form action="/api/exercise/new-user" method="post">
+                    <input class="form-input" type="text" placeholder="username" />
+                    <button class="form-button" type="submit">Submit</button>
+                </form>
+            </div>
+            <div class="request-box">
+                <h2>Add Exercises</h2>
+                <label class="form-label">POST /api/exercise/add</label>
+                <form action="/api/exercise/add" method="post">
+                    <input class="form-input" type="text" name="id" placeholder="userId*">
+                    <input class="form-input" type="text" name="description" placeholder="description*">
+                    <input class="form-input" type="text" name="duration" placeholder="duration* (mins.)">
+                    <input class="form-input" type="text" name="date" placeholder="date (yyyy-mm-dd)">
+                    <button class="form-button" type="submit">Submit</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
 </body>
 </html>
