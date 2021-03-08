@@ -1,6 +1,7 @@
 body{
     box-sizing: border-box;
     font-family: sans-serif;
+    font-size: 20px;
 }
 
 h1{
@@ -31,7 +32,7 @@ form {
 
 .form-label {
     background-color: #FFFEC4;
-    padding: 3px;
+    padding: 5px;
 }
 
 .form-input{
