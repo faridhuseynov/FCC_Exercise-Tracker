@@ -25,9 +25,15 @@ const userSchema = new mongoose.Schema({
     username: String
 });
 
-
+const exerciseSchema = new mongoose.Schema({
+    userId:String,
+    description:String,
+    duration:Number,
+    date:Date
+});
 
 const User = mongoose.model("User", userSchema);
+const Exercise = mongoose.model("Exercise",exerciseSchema);
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/views/index.html");
@@ -63,6 +69,36 @@ app.post("/api/exercise/new-user", (req, res) => {
             }
         }
     });
+})
+
+app.post("/api/exercise/add",(req,res)=>{
+    var exercise = req.body;
+    // if no date specified, then today is the date
+    exercise.date = exercise.date==""?((new Date()).toDateString()):((new Date(exercise.date)).toDateString());
+    const newExercise = new Exercise({
+        userId:exercise.id,
+        description:exercise.description,
+        duration:exercise.duration,
+        date:exercise.date
+    })
+    User.find({_id:exercise.id},(err,foundUser)=>{
+        if(err){
+            return res.send(err);
+        }
+        newExercise.save((err,savedExercise)=>{
+            if(err){
+                if (err.kind=="ObjectId") {
+                    return res.send("User Id is wrong, please check and try again");
+                }
+                return res.send(err);
+            }
+            res.json({
+                "_id": foundUser[0]._id, "username": foundUser[0].username, "date": savedExercise.date.toDateString(),
+                "duration": savedExercise.duration, "description": savedExercise.description
+            });
+        });
+    })
+
 })
 
 app.listen(port, () => {
