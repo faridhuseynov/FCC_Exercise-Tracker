@@ -48,6 +48,10 @@ app.get("/api/exercise/users",(req,res)=>{
     })
 })
 
+app.get("/api/exercise/log/:userId",(req,res)=>{
+console.log(req);
+})
+
 app.post("/api/exercise/new-user", (req, res) => {
     var name = req.body.username;
     User.find({ username: name }, (error, foundUser) => {
