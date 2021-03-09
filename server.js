@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
 app.get("/api/exercise/users",(req,res)=>{
     User.find({},(err,foundUsers)=>{
         if (err) {
-            return console.log(err);
+            return res.send(err);
         }
         res.json(foundUsers);
     })
