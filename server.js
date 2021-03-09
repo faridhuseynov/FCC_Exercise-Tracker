@@ -11,6 +11,7 @@ const port = process.env.PORT || 3000;
 mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
+
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
     console.log('db connected');
@@ -30,6 +31,15 @@ const User = mongoose.model("User", userSchema);
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/views/index.html");
+})
+
+app.get("/api/exercise/users",(req,res)=>{
+    User.find({},(err,foundUsers)=>{
+        if (err) {
+            return console.log(err);
+        }
+        res.json(foundUsers);
+    })
 })
 
 app.post("/api/exercise/new-user", (req, res) => {
