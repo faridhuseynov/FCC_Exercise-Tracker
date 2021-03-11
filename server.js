@@ -22,14 +22,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/public", express.static(__dirname + "/public"));
 
 const userSchema = new mongoose.Schema({
-    username: String
+    username: String,
 });
 
 const exerciseSchema = new mongoose.Schema({
     userId:String,
     description:String,
     duration:Number,
-    date:Date
+    date:Date,
 });
 
 const User = mongoose.model("User", userSchema);
@@ -48,8 +48,29 @@ app.get("/api/exercise/users",(req,res)=>{
     })
 })
 
-app.get("/api/exercise/log/:userId",(req,res)=>{
-console.log(req);
+app.get("/api/exercise/log", (req, res) => {
+    console.log(req.query);
+    var userId = req.query.userId;
+    var from = req.query.from==undefined?undefined:((new Date(req.query.from)).toDateString());
+    var to = req.query.to==undefined?undefined:((new Date(req.query.to)).toDateString());
+    if(userId==undefined)
+        return res.send('Unknown userId');
+    User.find({"_id":userId},(err,foundUser)=>{
+        var user = {"_id":foundUser[0]._id, "username":foundUser[0].username};
+        Exercise.find({"userId":user._id},(err,exercises)=>{
+            var logs = exercises;
+            if(logs.length>0){
+                if(from!=undefined){
+                    logs = logs.filter(exercise=>(new Date(exercise.date)).toDateString()>=from)
+                }
+                if(to!=undefined){
+                    logs = logs.filter(exercise=>(new Date(exercise.date)).toDateString()<=from)
+                }
+            }
+            user.count=logs.length;
+        });
+    })
+    console.log(userId);
 })
 
 app.post("/api/exercise/new-user", (req, res) => {
@@ -97,12 +118,11 @@ app.post("/api/exercise/add",(req,res)=>{
                 return res.send(err);
             }
             res.json({
-                "_id": foundUser[0]._id, "username": foundUser[0].username, "date": savedExercise.date.toDateString(),
-                "duration": savedExercise.duration, "description": savedExercise.description
+                _id: foundUser[0]._id, username: foundUser[0].username, date: savedExercise.date.toDateString(),
+                duration: savedExercise.duration, description: savedExercise.description
             });
         });
     })
-
 })
 
 app.listen(port, () => {
