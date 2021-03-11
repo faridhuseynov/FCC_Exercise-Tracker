@@ -52,7 +52,8 @@ app.get("/api/exercise/log", (req, res) => {
     var userId = req.query.userId;
     var from = req.query.from==undefined?undefined:(new Date(req.query.from));
     var to = req.query.to==undefined?undefined:(new Date(req.query.to));
-    console.log(from);
+    var limit = req.query.limit;
+    console.log(req.query);
     if(userId==undefined)
         return res.send('Unknown userId');
     User.find({"_id":userId},(err,foundUser)=>{
@@ -80,6 +81,9 @@ app.get("/api/exercise/log", (req, res) => {
                     })
                 }
                 logs.forEach(exercise=>exercise.date.toDateString());
+                if(logs.length>limit && limit>=0){
+                    logs = logs.slice(0,limit);
+                }
             }
             user.count=logs.length;
             user.log=logs;
@@ -92,13 +96,13 @@ app.post("/api/exercise/new-user", (req, res) => {
     var name = req.body.username;
     User.find({ username: name }, (error, foundUser) => {
         if (error) {
-            console.log(error);
+            return res.send(error);
         } else {
             if (foundUser.length == 0) {
                 const newUser = new User({ username: name });
                 newUser.save((error, success) => {
                     if (error) {
-                        return console.log(error);
+                        return res.send(error);
                     } else {
                         res.json({ "username": success.username, "_id": success._id });
                     }
