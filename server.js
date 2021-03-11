@@ -49,28 +49,43 @@ app.get("/api/exercise/users",(req,res)=>{
 })
 
 app.get("/api/exercise/log", (req, res) => {
-    console.log(req.query);
     var userId = req.query.userId;
-    var from = req.query.from==undefined?undefined:((new Date(req.query.from)).toDateString());
-    var to = req.query.to==undefined?undefined:((new Date(req.query.to)).toDateString());
+    var from = req.query.from==undefined?undefined:(new Date(req.query.from));
+    var to = req.query.to==undefined?undefined:(new Date(req.query.to));
+    console.log(from);
     if(userId==undefined)
         return res.send('Unknown userId');
     User.find({"_id":userId},(err,foundUser)=>{
+        if(err){
+            return res.send(`Cast to ObjectId failed for value "${userId}" at path "_id" for model "Users"`);
+        }
         var user = {"_id":foundUser[0]._id, "username":foundUser[0].username};
-        Exercise.find({"userId":user._id},(err,exercises)=>{
+        Exercise.find({"userId":user._id},{_id:0,__v:0, userId:0},(err,exercises)=>{
             var logs = exercises;
             if(logs.length>0){
-                if(from!=undefined){
-                    logs = logs.filter(exercise=>(new Date(exercise.date)).toDateString()>=from)
+                if(from!=undefined && from!='Invalid Date'){
+                    logs = logs.filter(exercise=>{
+                        var date = (new Date(exercise.date));
+                        if(date.getTime()>=from.getTime()){
+                            return date;
+                        }
+                    })
                 }
-                if(to!=undefined){
-                    logs = logs.filter(exercise=>(new Date(exercise.date)).toDateString()<=from)
+                if(to!=undefined && to!='Invalid Date'){
+                    logs = logs.filter(exercise=>{
+                        var date = new Date(exercise.date);
+                        if(date.getTime()<=to.getTime()){
+                            return date;
+                        }
+                    })
                 }
+                logs.forEach(exercise=>exercise.date.toDateString());
             }
             user.count=logs.length;
+            user.log=logs;
+            res.send(user);
         });
     })
-    console.log(userId);
 })
 
 app.post("/api/exercise/new-user", (req, res) => {
